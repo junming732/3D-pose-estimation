@@ -68,7 +68,7 @@ def _video_writer_like(input_video: cv2.VideoCapture, out_path: Path) -> cv2.Vid
     fps = input_video.get(cv2.CAP_PROP_FPS) or 30.0
     w = int(input_video.get(cv2.CAP_PROP_FRAME_WIDTH) or 1280)
     h = int(input_video.get(cv2.CAP_PROP_FRAME_HEIGHT) or 720)
-    fourcc = cv2.VideoWriter_fourcc(*"mp4v")
+    fourcc = cv2.VideoWriter_fourcc(*"mp4v") # type: ignore[attr-defined]
     out_path.parent.mkdir(parents=True, exist_ok=True)
     return cv2.VideoWriter(str(out_path), fourcc, float(fps), (w, h))
 
@@ -77,7 +77,7 @@ def _video_writer_fixed(
     size_hw: Tuple[int, int], out_path: Path, fps: float = 30.0
 ) -> cv2.VideoWriter:
     h, w = size_hw
-    fourcc = cv2.VideoWriter_fourcc(*"mp4v")
+    fourcc = cv2.VideoWriter_fourcc(*"mp4v") # type: ignore[attr-defined]
     out_path.parent.mkdir(parents=True, exist_ok=True)
     return cv2.VideoWriter(
         str(out_path), fourcc, float(fps), (w, w if isinstance(w, int) else int(w))
@@ -167,8 +167,8 @@ def process_sequence(
     else:
         raise ValueError(f"Unsupported source: {source}")
 
-    preds_2d: List[np.ndarray] = []
-    visibilities: List[np.ndarray] = []
+    preds_list: list[np.ndarray] = []
+    vis_list: list[np.ndarray] = []
 
     try:
         for idx, frame in enumerate(frames_iter):
@@ -190,8 +190,8 @@ def process_sequence(
                 keypoints_2d[:, 0] *= sx
                 keypoints_2d[:, 1] *= sy
 
-            preds_2d.append(keypoints_2d)
-            visibilities.append(visibility)
+            preds_list.append(keypoints_2d)
+            vis_list.append(visibility)
 
             # Visualization overlay
             if save_vis_to is not None:
@@ -203,11 +203,11 @@ def process_sequence(
                     else:
                         fps = 30.0
                         h, w = frame.shape[:2]
-                    fourcc = cv2.VideoWriter_fourcc(*"mp4v")
+                    fourcc = cv2.VideoWriter_fourcc(*"mp4v") # type: ignore[attr-defined]
                     save_vis_to.parent.mkdir(parents=True, exist_ok=True)
                     vis_writer = cv2.VideoWriter(str(save_vis_to), fourcc, float(fps), (w, h))
                 vis = frame.copy()
-                vis = draw_skeleton_2d(vis, preds_2d[-1], visibilities[-1])
+                vis = draw_skeleton_2d(vis, preds_list[-1], vis_list[-1])
                 cv2.putText(
                     vis, f"Frame {idx}", (10, 30), cv2.FONT_HERSHEY_SIMPLEX, 0.7, (0, 255, 255), 2
                 )
@@ -218,9 +218,9 @@ def process_sequence(
         if vis_writer is not None:
             vis_writer.release()
 
-    preds_2d = np.stack(preds_2d, axis=0) if preds_2d else np.empty((0, 33, 2), dtype=np.float32)
+    preds_2d = np.stack(preds_list, axis=0) if preds_list else np.empty((0, 33, 2), dtype=np.float32)
     visibilities = (
-        np.stack(visibilities, axis=0) if visibilities else np.empty((0, 33), dtype=np.float32)
+        np.stack(vis_list, axis=0) if vis_list else np.empty((0, 33), dtype=np.float32)
     )
 
     # Save predictions
@@ -231,11 +231,6 @@ def process_sequence(
     metrics: Dict[str, float] = {}
     if eval_gt_2d is not None and eval_gt_2d.size > 0:
         metrics["mpjpe_2d_px"] = float(_compute_2d_mpjpe(preds_2d, eval_gt_2d))
-    # if eval_gt_3d is not None and eval_gt_3d.size > 0:
-    #     metrics["mpjpe_3d"] = float(
-    #         _compute_3d_mpjpe(preds_2d, eval_gt_3d)
-    #     )  # Note: placeholder unless you also reconstruct 3D
-
     return metrics
 
 
