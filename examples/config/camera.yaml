@@ -1,0 +1,8 @@
+# Example camera configuration
+source: 0         # webcam index or path to video file
+fx: 1000.0
+fy: 1000.0
+cx: 640.0
+cy: 360.0
+depth_scale: 0.001
+use_depth: false

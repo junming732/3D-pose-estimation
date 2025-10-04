@@ -1,0 +1,8 @@
+# Instead of webcam
+source: "/home/ubuntu/3D-pose-estimation/data/mpi_inf_3dhp/train/S1/Seq1/imageSequence/video_0.avi"
+
+# If you’re not using depth maps
+use_depth: false
+
+# (Optional) if your app supports ground-truth path:
+# ground_truth: "/home/ubuntu/3D-pose-estimation/data/mpi_inf_3dhp/train/S1/Seq1/annot.mat"

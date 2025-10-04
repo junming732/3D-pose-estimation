@@ -1,0 +1,28 @@
+# Python
+__pycache__/
+*.py[cod]
+*.so
+.venv/
+env/
+venv/
+dist/
+build/
+*.egg-info/
+
+# IDE
+.vscode/
+.idea/
+
+# OS
+.DS_Store
+
+# Data / logs
+data/
+outputs/
+logs/
+
+# Notebooks
+.ipynb_checkpoints/
+
+# Open3D temp
+*.ply

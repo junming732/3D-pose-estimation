@@ -1,0 +1,18 @@
+# examples/config/dataset.yaml
+# Relative path to your dataset (relative to repo root where you run python)
+data_root: "data/mpi_inf_3dhp/train"
+
+pattern: "**/imageSequence/video_0.avi"
+
+# Where to put predictions, videos and metrics
+output_dir: "outputs/mpi3dhp"
+
+# Optional camera intrinsics – only needed if you later lift to 3D
+fx: 1000.0
+fy: 1000.0
+cx: 640.0
+cy: 360.0
+
+# Converted annot.mat NPZ files (also relative)
+gt_2d_npz: "data/gt_2d_all.npz"
+gt_3d_npz: "data/gt_3d_all.npz"
