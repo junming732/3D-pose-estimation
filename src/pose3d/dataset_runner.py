@@ -68,7 +68,7 @@ def _video_writer_like(input_video: cv2.VideoCapture, out_path: Path) -> cv2.Vid
     fps = input_video.get(cv2.CAP_PROP_FPS) or 30.0
     w = int(input_video.get(cv2.CAP_PROP_FRAME_WIDTH) or 1280)
     h = int(input_video.get(cv2.CAP_PROP_FRAME_HEIGHT) or 720)
-    fourcc = cv2.VideoWriter_fourcc(*"mp4v") # type: ignore[attr-defined]
+    fourcc = cv2.VideoWriter_fourcc(*"mp4v")  # type: ignore[attr-defined]
     out_path.parent.mkdir(parents=True, exist_ok=True)
     return cv2.VideoWriter(str(out_path), fourcc, float(fps), (w, h))
 
@@ -77,7 +77,7 @@ def _video_writer_fixed(
     size_hw: Tuple[int, int], out_path: Path, fps: float = 30.0
 ) -> cv2.VideoWriter:
     h, w = size_hw
-    fourcc = cv2.VideoWriter_fourcc(*"mp4v") # type: ignore[attr-defined]
+    fourcc = cv2.VideoWriter_fourcc(*"mp4v")  # type: ignore[attr-defined]
     out_path.parent.mkdir(parents=True, exist_ok=True)
     return cv2.VideoWriter(
         str(out_path), fourcc, float(fps), (w, w if isinstance(w, int) else int(w))
@@ -203,7 +203,7 @@ def process_sequence(
                     else:
                         fps = 30.0
                         h, w = frame.shape[:2]
-                    fourcc = cv2.VideoWriter_fourcc(*"mp4v") # type: ignore[attr-defined]
+                    fourcc = cv2.VideoWriter_fourcc(*"mp4v")  # type: ignore[attr-defined]
                     save_vis_to.parent.mkdir(parents=True, exist_ok=True)
                     vis_writer = cv2.VideoWriter(str(save_vis_to), fourcc, float(fps), (w, h))
                 vis = frame.copy()
@@ -218,10 +218,10 @@ def process_sequence(
         if vis_writer is not None:
             vis_writer.release()
 
-    preds_2d = np.stack(preds_list, axis=0) if preds_list else np.empty((0, 33, 2), dtype=np.float32)
-    visibilities = (
-        np.stack(vis_list, axis=0) if vis_list else np.empty((0, 33), dtype=np.float32)
+    preds_2d = (
+        np.stack(preds_list, axis=0) if preds_list else np.empty((0, 33, 2), dtype=np.float32)
     )
+    visibilities = np.stack(vis_list, axis=0) if vis_list else np.empty((0, 33), dtype=np.float32)
 
     # Save predictions
     if save_npz_to is not None:
